@@ -1,19 +1,22 @@
 package midi.Playback;
 
 import midi.Data.MidiFile;
-import midi.MidiMessage.MidiMessageVisitor;
+import midi.Data.Message.MidiMessageListener;
 
-// Controls the real time timing of a midi file
 public class MidiSequencer {
-    private MidiTrackSequencer[] trackSequences;
+    private final MidiTrackSequencer[] trackSequences;
 
     public MidiSequencer(
             MidiFile file,
-            MidiMessageVisitor reciever,
+            MidiMessageListener reciever,
             MidiTiming timing) {
         trackSequences = new MidiTrackSequencer[file.tracks.size()];
+
         for (int i = 0; i < file.tracks.size(); i++) {
-            trackSequences[i] = new MidiTrackSequencer(file.tracks.get(i), reciever, timing);
+            trackSequences[i] = new MidiTrackSequencer(
+                    file.tracks.get(i),
+                    reciever,
+                    timing);
         }
     }
 

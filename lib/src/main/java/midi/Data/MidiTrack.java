@@ -2,7 +2,7 @@ package midi.Data;
 
 import java.util.ArrayList;
 
-import midi.MidiMessage.MidiMessage;
+import midi.Data.Message.MidiMessage;
 
 public class MidiTrack {
     public MidiTrackHeader header;

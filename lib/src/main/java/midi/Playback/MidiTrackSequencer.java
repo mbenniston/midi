@@ -1,22 +1,23 @@
 package midi.Playback;
 
 import midi.Data.MidiTrack;
-import midi.MidiMessage.MidiMessage;
-import midi.MidiMessage.MidiMessageVisitor;
-import midi.MidiMessage.MidiMessages.MidiSystemMessages.MidiSystemSetTempo;
+import midi.Data.Message.MidiMessage;
+import midi.Data.Message.MidiMessageListener;
+import midi.Data.Message.MidiMessages.MidiSystemMessages.MidiSystemSetTempo;
 
 public class MidiTrackSequencer {
-    private MidiTrack track;
+    private final MidiTrack track;
+    private final MidiTiming timing;
+
     private int currentMessageIndex = 0;
     private long waitTicks = 0;
     private MidiMessage stallMessage;
-    private MidiTiming timing;
 
-    private MidiMessageVisitor reciever;
+    private final MidiMessageListener reciever;
 
     public MidiTrackSequencer(
             MidiTrack track,
-            MidiMessageVisitor reciever,
+            MidiMessageListener reciever,
             MidiTiming timing) {
         this.track = track;
         this.reciever = reciever;
@@ -29,7 +30,7 @@ public class MidiTrackSequencer {
 
             if (message.timeDelta == 0 || message == stallMessage) {
                 stallMessage = null;
-                reciever.visit(message);
+                reciever.onRecieve(message);
 
                 if (message instanceof MidiSystemSetTempo) {
                     MidiSystemSetTempo tempo = (MidiSystemSetTempo) message;

@@ -1,2 +1,3 @@
 rootProject.name = 'midi'
+include('app')
 include('lib')

@@ -4,165 +4,42 @@
 package midi;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
-import midi.Data.ReadingUtils;
+import midi.Reading.ReadingUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+
+import static midi.TestUtils.*;
 
 class ReadingUtilsTests {
-    private static final int TEST_STREAM_LENGTH = 8 * 1024;
-
-    private static String createRandomString(int length) {
-        StringBuilder builder = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            builder.append(random.nextInt(0xFF + 1));
-        }
-        return builder.toString();
-    }
-
-    private static byte[] createRandomBytes(int length) {
-        byte[] bytes = new byte[length];
-        new Random().nextBytes(bytes);
-        return bytes;
-    }
-
-    private static int[] createRandomShorts(int length) {
-        int[] shorts = new int[length];
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            shorts[i] = random.nextInt(0, 0xFFFF + 1);
-        }
-        return shorts;
-    }
-
-    private static long[] createRandomUnsignedInts(int length) {
-        return createRandomUnsignedInts(length, 0xFFFFFFFFL);
-    }
-
-    private static long[] createRandomUnsignedInts(int length, long maxInt) {
-        long[] ints = new long[length];
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            ints[i] = random.nextLong(0L, maxInt + 1L);
-        }
-        return ints;
-    }
-
-    private static long[] createRandomVariableLength(int length) {
-        long[] ints = new long[length];
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            ints[i] = random.nextLong(0L, (1L << (ReadingUtils.MAX_BITS_SUPPORTED_FOR_VARIABLE_PRECISION + 1))
-                    - (1L << (ReadingUtils.MAX_BITS_SUPPORTED_FOR_VARIABLE_PRECISION)) + 1L);
-        }
-        return ints;
-    }
-
-    private static int getBytesUsedFromLong(long l) {
-        int bytesUsed = Long.BYTES;
-
-        while (bytesUsed != 0) {
-            long currentByte = (l >>> (bytesUsed - 1) * 8) & 0xFF;
-            if (currentByte == 0) {
-                bytesUsed--;
-            }
-        }
-
-        return bytesUsed;
-    }
-
-    private static void convertLongToVariableLength(long l, ArrayList<Byte> dest) {
-        ArrayList<Byte> bytes = new ArrayList<>();
-
-        long numSevenBits = (Long.BYTES / 7);
-
-        for (int i = 0; i < numSevenBits; i++) {
-            long b = (l >> (i * 7)) & 0x7FL;
-            bytes.add((byte) b);
-        }
-
-        Collections.reverse(bytes);
-
-        byte b;
-        do {
-            b = bytes.get(0);
-            if (b == 0) {
-                bytes.remove(0);
-            }
-        } while (b == (byte) 0 && !bytes.isEmpty());
-
-        for (int i = 0; i < bytes.size(); i++) {
-
-        }
-
-        // long sevenBits;
-        // long numSevenBits = (Long.BYTES / 7) * 7;
-        // long offset = 0;
-        // do {
-        // sevenBits = (l >>> (numSevenBits - offset)) & 0xFE;
-        // offset++;
-        // } while (sevenBits == 0 && offset < numSevenBits);
-
-        // for (long i = 0; i < (numSevenBits - offset); i++) {
-
-        // long currentByte = (l >>> (numSevenBits - offset)) & 0xFE;
-        // }
-
-    }
-
-    private static byte[] convertLongsToVariableLength(long[] longs) {
-        ArrayList<Byte> bytes = new ArrayList<>();
-
-        for (long l : longs) {
-            convertLongToVariableLength(l, bytes);
-        }
-
-        byte[] bytes2 = new byte[bytes.size()];
-        for (int i = 0; i < bytes.size(); i++) {
-            bytes2[i] = bytes.get(i);
-        }
-        return bytes2;
-    }
+    private static final int TEST_STREAM_LENGTH = 1024;
 
     @Test
     void readBytesFromRandomStream() {
         byte[] randomBytes = createRandomBytes(TEST_STREAM_LENGTH);
         InputStream randomStream = new ByteArrayInputStream(randomBytes);
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                for (int i = 0; i < TEST_STREAM_LENGTH; i++) {
-                    assertEquals(randomBytes[i], ReadingUtils.readByte(randomStream));
-                }
+        assertDoesNotThrow(() -> {
+            for (int i = 0; i < TEST_STREAM_LENGTH; i++) {
+                assertEquals(randomBytes[i], ReadingUtils.readByte(randomStream));
             }
         });
 
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                ReadingUtils.readByte(randomStream);
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            ReadingUtils.readByte(randomStream);
         });
+
     }
 
     @Test
     void readByteFromEmptyStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[0];
-                ReadingUtils.readByte(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[0];
+            ReadingUtils.readByte(new ByteArrayInputStream(emptyBytes));
         });
     }
 
@@ -184,23 +61,17 @@ class ReadingUtilsTests {
 
     @Test
     void readUnsignedShortFromEmptyStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[0];
-                ReadingUtils.readUnsignedShort(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[0];
+            ReadingUtils.readUnsignedShort(new ByteArrayInputStream(emptyBytes));
         });
     }
 
     @Test
     void readUnsignedShortFromIncompleteStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88 };
-                ReadingUtils.readUnsignedShort(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88 };
+            ReadingUtils.readUnsignedShort(new ByteArrayInputStream(emptyBytes));
         });
     }
 
@@ -215,20 +86,14 @@ class ReadingUtilsTests {
         }
         InputStream randomStream = new ByteArrayInputStream(streamBytes);
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                for (int i = 0; i < shorts.length; i++) {
-                    assertEquals(shorts[i], ReadingUtils.readUnsignedShort(randomStream));
-                }
+        assertDoesNotThrow(() -> {
+            for (int i = 0; i < shorts.length; i++) {
+                assertEquals(shorts[i], ReadingUtils.readUnsignedShort(randomStream));
             }
         });
 
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                ReadingUtils.readUnsignedShort(randomStream);
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            ReadingUtils.readUnsignedShort(randomStream);
         });
     }
 
@@ -244,55 +109,38 @@ class ReadingUtilsTests {
 
             InputStream randomStream = new ByteArrayInputStream(streamBytes);
 
-            assertDoesNotThrow(new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    assertEquals(expectedShort, ReadingUtils.readUnsignedShort(randomStream));
-                }
+            assertDoesNotThrow(() -> {
+                assertEquals(expectedShort, ReadingUtils.readUnsignedShort(randomStream));
             });
 
-            assertThrowsExactly(IOException.class, new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    ReadingUtils.readUnsignedShort(randomStream);
-                }
+            assertThrowsExactly(IOException.class, () -> {
+                ReadingUtils.readUnsignedShort(randomStream);
             });
         }
     }
 
     @Test
     void readUnsignedIntFromEmptyStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[0];
-                ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[0];
+            ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
         });
     }
 
     @Test
     void readUnsignedIntFromIncompleteStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88 };
-                ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88 };
+            ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
         });
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66 };
-                ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
-            }
+
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66 };
+            ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
         });
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66, 0x11 };
-                ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66, 0x11 };
+            ReadingUtils.readUnsignedInt(new ByteArrayInputStream(emptyBytes));
         });
     }
 
@@ -309,49 +157,34 @@ class ReadingUtilsTests {
         }
         InputStream randomStream = new ByteArrayInputStream(streamBytes);
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                for (int i = 0; i < unsignedInts.length; i++) {
-                    assertEquals(unsignedInts[i], ReadingUtils.readUnsignedInt(randomStream));
-                }
+        assertDoesNotThrow(() -> {
+            for (int i = 0; i < unsignedInts.length; i++) {
+                assertEquals(unsignedInts[i], ReadingUtils.readUnsignedInt(randomStream));
             }
         });
 
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                ReadingUtils.readUnsignedInt(randomStream);
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            ReadingUtils.readUnsignedInt(randomStream);
         });
     }
 
     @Test
     void readUnsignedIntFrom3BytesFromEmptyStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[0];
-                ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[0];
+            ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
         });
     }
 
     @Test
     void readUnsignedIntFrom3BytesFromIncompleteStream() {
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88 };
-                ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88 };
+            ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
         });
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66 };
-                ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            byte[] emptyBytes = new byte[] { (byte) 0x88, 0x66 };
+            ReadingUtils.readUnsignedIntFrom3Bytes(new ByteArrayInputStream(emptyBytes));
         });
     }
 
@@ -367,20 +200,14 @@ class ReadingUtilsTests {
         }
         InputStream randomStream = new ByteArrayInputStream(streamBytes);
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                for (int i = 0; i < UnsignedIntFrom3Bytess.length; i++) {
-                    assertEquals(UnsignedIntFrom3Bytess[i], ReadingUtils.readUnsignedIntFrom3Bytes(randomStream));
-                }
+        assertDoesNotThrow(() -> {
+            for (int i = 0; i < UnsignedIntFrom3Bytess.length; i++) {
+                assertEquals(UnsignedIntFrom3Bytess[i], ReadingUtils.readUnsignedIntFrom3Bytes(randomStream));
             }
         });
 
-        assertThrowsExactly(IOException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                ReadingUtils.readUnsignedIntFrom3Bytes(randomStream);
-            }
+        assertThrowsExactly(IOException.class, () -> {
+            ReadingUtils.readUnsignedIntFrom3Bytes(randomStream);
         });
     }
 
@@ -389,11 +216,8 @@ class ReadingUtilsTests {
         byte[] bytes = new byte[] {};
         InputStream randomStream = new ByteArrayInputStream(bytes);
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                assertEquals("", ReadingUtils.readString(randomStream, 0));
-            }
+        assertDoesNotThrow(() -> {
+            assertEquals("", ReadingUtils.readString(randomStream, 0));
         });
     }
 
@@ -402,35 +226,13 @@ class ReadingUtilsTests {
         String randomString = createRandomString(TEST_STREAM_LENGTH);
         InputStream randomStream = new ByteArrayInputStream(randomString.getBytes());
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                assertEquals(randomString, ReadingUtils.readString(randomStream, randomString.length()));
-            }
+        assertDoesNotThrow(() -> {
+            assertEquals(randomString, ReadingUtils.readString(randomStream, randomString.length()));
         });
     }
 
-    // @Test
-    // void readVariableLengthFromRandomStream() {
-    // long[] values = createRandomVariableLength(1);
-
-    // InputStream randomStream = new
-    // ByteArrayInputStream(convertLongsToVariableLength(values));
-
-    // byte[] bytes = convertLongsToVariableLength(values);
-
-    // assertDoesNotThrow(new Executable() {
-    // @Override
-    // public void execute() throws Throwable {
-    // for (long value : values) {
-    // assertEquals(value, ReadingUtils.readVariableLength(randomStream));
-    // }
-    // }
-    // });
-    // }
-
     @Test
-    void readVariableLengthFromickedExamples() {
+    void readVariableLengthFromPickedExamples() {
         final long[] values = new long[] {
                 0,
                 7,
@@ -445,6 +247,7 @@ class ReadingUtilsTests {
                 134217728,
                 268435455
         };
+
         InputStream stream = new ByteArrayInputStream(
                 new byte[] {
                         (byte) 0x00, (byte) 0x07, (byte) 0x7f, (byte) 0x81, 0x00, (byte) 0xC0, 0x00, (byte) 0xff, 0x7f,
@@ -454,24 +257,74 @@ class ReadingUtilsTests {
                         (byte) 0xFF, (byte) 0xFF, (byte) 0x7F
                 });
 
-        assertDoesNotThrow(new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                for (long value : values) {
-                    assertEquals(value, ReadingUtils.readVariableLength(stream));
-                }
+        assertDoesNotThrow(() -> {
+            for (long value : values) {
+                assertEquals(value, ReadingUtils.readVariableLength(stream));
+            }
+        });
+    }
+
+    @Test
+    void readVariableLengthFromRandomStream() {
+        long[] values = createRandomVariableLength(TEST_STREAM_LENGTH);
+
+        InputStream randomStream = new ByteArrayInputStream(convertLongsToVariableLength(values));
+
+        assertDoesNotThrow(() -> {
+            for (long value : values) {
+                assertEquals(value, ReadingUtils.readVariableLength(randomStream));
             }
         });
     }
 
     @Test
     void readVariableLengthFromInvalidNumber() {
+        final byte nonTerminalByte = (byte) 0x80;
 
+        byte[] bytes = new byte[ReadingUtils.MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION + 1];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = nonTerminalByte;
+        }
+        InputStream stream = new ByteArrayInputStream(bytes);
+
+        assertThrows(IOException.class, () -> {
+            ReadingUtils.readVariableLength(stream);
+        });
     }
 
     @Test
     void readVariableLengthUntilOutOfPrecision() {
+        final byte nonTerminalByte = (byte) 0x80;
+        final byte terminalByte = (byte) 0x00;
 
+        byte[] bytes = new byte[ReadingUtils.MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION + 1];
+        for (int i = 0; i < bytes.length - 1; i++) {
+            bytes[i] = nonTerminalByte;
+        }
+        bytes[bytes.length - 1] = terminalByte;
+
+        InputStream stream = new ByteArrayInputStream(bytes);
+
+        assertThrows(IOException.class, () -> {
+            ReadingUtils.readVariableLength(stream);
+        });
     }
 
+    @Test
+    void readVariableLengthUntilAtPrecisionEdge() {
+        final byte nonTerminalByte = (byte) 0x80;
+        final byte terminalByte = (byte) 0x00;
+
+        byte[] bytes = new byte[ReadingUtils.MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION];
+        for (int i = 0; i < bytes.length - 1; i++) {
+            bytes[i] = nonTerminalByte;
+        }
+        bytes[bytes.length - 1] = terminalByte;
+
+        InputStream stream = new ByteArrayInputStream(bytes);
+
+        assertDoesNotThrow(() -> {
+            assertEquals(0, ReadingUtils.readVariableLength(stream));
+        });
+    }
 }

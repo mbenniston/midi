@@ -1,10 +1,8 @@
 
-- header: divisions timing
-- visitor refactor + event listener interface + event dispatcher?
-- convert bytes to ints in data classes
-- track formats (sequentials, asyncrhonus)
-
-- midi file loading
-    - collapse message parsing loop  
-- unit testing
-    - basic data loading functions
+- [X] convert bytes to ints in data classes
+- [X] seperate status into channel and type
+    - maybe implement getLength function to return the amount of bytes required for an event
+- [X] Implement getLength for rest of system messages
+- [ ] Seperate meta and sysex messages
+- [ ] header: divisions timing
+- [ ] track formats (sequentials, asyncrhonus)

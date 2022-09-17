@@ -11,4 +11,9 @@ public class MidiSystemMarker extends MidiSystemExclusive {
         visitor.visit(this);
     }
 
+    @Override
+    public long getLengthInBytes() {
+        return marker.length();
+    }
+
 }

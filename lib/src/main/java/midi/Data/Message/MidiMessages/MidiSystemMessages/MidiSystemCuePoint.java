@@ -11,4 +11,9 @@ public class MidiSystemCuePoint extends MidiSystemExclusive {
         visitor.visit(this);
     }
 
+    @Override
+    public long getLengthInBytes() {
+        return cue.length();
+    }
+
 }

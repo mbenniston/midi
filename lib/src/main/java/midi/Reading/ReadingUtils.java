@@ -2,6 +2,7 @@ package midi.Reading;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class ReadingUtils {
     public static final int MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION = (Long.BYTES * 8 - 1) / 7;
@@ -94,5 +95,13 @@ public class ReadingUtils {
 
     public static long byteToLong(byte b) {
         return ((long) b) & 0xFF;
+    }
+
+    public static byte[] listToByteArray(List<Byte> bytes) {
+        byte[] outBytes = new byte[bytes.size()];
+        for (int i = 0; i < bytes.size(); i++) {
+            outBytes[i] = bytes.get(i);
+        }
+        return outBytes;
     }
 }

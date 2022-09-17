@@ -10,4 +10,9 @@ public class MidiSystemCopyright extends MidiSystemExclusive {
     public void acceptVisitor(MidiSystemMessageVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public long getLengthInBytes() {
+        return copyright.length();
+    }
 }

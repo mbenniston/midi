@@ -13,8 +13,6 @@ import midi.Data.Message.MidiMessages.MidiSystemMessages.MidiSystemEndOfTrack;
 import midi.Reading.MidiFileReader.MidiLoadError;
 
 public class MidiTrackReader {
-    public static final long MIDI_TRACK_CHUNK_ID = 0x4D54726BL;
-
     private final PushbackInputStream source;
     private final MidiMessageReader messageReader;
 
@@ -49,7 +47,7 @@ public class MidiTrackReader {
     public MidiTrackHeader readTrackHeader() throws IOException, MidiLoadError {
         MidiTrackHeader trackHeader = new MidiTrackHeader();
         trackHeader.magicNumber = readUnsignedInt(source);
-        if (trackHeader.magicNumber != MIDI_TRACK_CHUNK_ID) {
+        if (trackHeader.magicNumber != MidiTrackHeader.MIDI_TRACK_CHUNK_ID) {
             throw new MidiLoadError();
         }
 

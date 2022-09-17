@@ -11,4 +11,8 @@ public class MidiSystemTrackName extends MidiSystemExclusive {
         visitor.visit(this);
     }
 
+    @Override
+    public long getLengthInBytes() {
+        return trackName.length();
+    }
 }

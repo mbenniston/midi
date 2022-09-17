@@ -11,4 +11,9 @@ public class MidiSystemLyrics extends MidiSystemExclusive {
         visitor.visit(this);
     }
 
+    @Override
+    public long getLengthInBytes() {
+        return lyrics.length();
+    }
+
 }

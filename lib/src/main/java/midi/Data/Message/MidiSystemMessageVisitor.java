@@ -35,6 +35,12 @@ public abstract class MidiSystemMessageVisitor implements MidiSystemMessageListe
 
     public abstract void visit(MidiSystemSequencerSpecific message);
 
+    public abstract void visit(MidiSystemManufacturerStart message);
+
+    public abstract void visit(MidiSystemManufacturerEnd message);
+
+    public abstract void visit(MidiSystemUnknown message);
+
     public void visit(MidiSystemExclusive message) {
         message.acceptVisitor(this);
     }
@@ -104,6 +110,22 @@ public abstract class MidiSystemMessageVisitor implements MidiSystemMessageListe
 
         @Override
         public void visit(MidiSystemSequencerSpecific message) {
+        }
+
+        @Override
+        public void visit(MidiSystemManufacturerStart message) {
+
+        }
+
+        @Override
+        public void visit(MidiSystemManufacturerEnd message) {
+
+        }
+
+        @Override
+        public void visit(MidiSystemUnknown message) {
+            // TODO Auto-generated method stub
+
         }
     }
 }

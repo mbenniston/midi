@@ -11,4 +11,9 @@ public class MidiSystemSequencerSpecific extends MidiSystemExclusive {
         visitor.visit(this);
     }
 
+    @Override
+    public long getLengthInBytes() {
+        return specific.length();
+    }
+
 }

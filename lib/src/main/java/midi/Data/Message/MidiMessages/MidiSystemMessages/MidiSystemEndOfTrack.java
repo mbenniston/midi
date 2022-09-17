@@ -9,4 +9,9 @@ public class MidiSystemEndOfTrack extends MidiSystemExclusive {
     public void acceptVisitor(MidiSystemMessageVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public long getLengthInBytes() {
+        return 0;
+    }
 }

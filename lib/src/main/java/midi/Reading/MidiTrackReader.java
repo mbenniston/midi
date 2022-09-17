@@ -8,17 +8,17 @@ import java.util.ArrayList;
 
 import midi.Data.MidiTrack;
 import midi.Data.MidiTrackHeader;
-import midi.Data.Message.MidiMessage;
-import midi.Data.Message.MidiMessages.MidiSystemMessages.MidiSystemEndOfTrack;
+import midi.Data.Event.MidiEvent;
+import midi.Data.Event.MidiEvents.MidiSystemEvents.MidiSystemEndOfTrack;
 import midi.Reading.MidiFileReader.MidiLoadError;
 
 public class MidiTrackReader {
     private final PushbackInputStream source;
-    private final MidiMessageReader messageReader;
+    private final MidiEventReader eventReader;
 
     public MidiTrackReader(PushbackInputStream source) {
         this.source = source;
-        this.messageReader = new MidiMessageReader(source);
+        this.eventReader = new MidiEventReader(source);
     }
 
     public MidiTrack readTrack() throws IOException, MidiLoadError {
@@ -28,16 +28,16 @@ public class MidiTrackReader {
     public MidiTrack readTrack(MidiTrackHeader trackHeader) throws IOException, MidiLoadError {
         MidiTrack track = new MidiTrack();
         track.header = trackHeader;
-        track.messages = new ArrayList<>();
+        track.events = new ArrayList<>();
 
-        MidiMessage lastMessageRead = null;
+        MidiEvent lastEventRead = null;
 
-        messageReader.resetStatusByte();
+        eventReader.resetStatusByte();
 
-        while (!hasReachedEndOfStream() && !(lastMessageRead instanceof MidiSystemEndOfTrack)) {
-            lastMessageRead = messageReader.readMessage();
-            if (lastMessageRead != null) {
-                track.messages.add(lastMessageRead);
+        while (!hasReachedEndOfStream() && !(lastEventRead instanceof MidiSystemEndOfTrack)) {
+            lastEventRead = eventReader.readEvent();
+            if (lastEventRead != null) {
+                track.events.add(lastEventRead);
             }
         }
 

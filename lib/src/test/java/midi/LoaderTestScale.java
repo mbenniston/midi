@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import midi.Data.MidiFile;
 import midi.Data.MidiTrackHeader;
-import midi.Data.Message.MidiMessage;
-import midi.Data.Message.MidiMessages.MidiVoiceNoteOn;
+import midi.Data.Event.MidiEvent;
+import midi.Data.Event.MidiEvents.MidiVoiceNoteOn;
 import midi.Reading.MidiFileReader;
 
 public class LoaderTestScale {

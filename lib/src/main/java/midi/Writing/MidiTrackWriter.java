@@ -5,25 +5,25 @@ import java.io.OutputStream;
 
 import midi.Data.MidiTrack;
 import midi.Data.MidiTrackHeader;
-import midi.Data.Message.MidiMessage;
+import midi.Data.Event.MidiEvent;
 
 import static midi.Writing.WritingUtils.*;
 
 public class MidiTrackWriter {
-    private final MidiMessageWriter messageWriter;
+    private final MidiEventWriter eventWriter;
     private final OutputStream outputStream;
 
     public MidiTrackWriter(OutputStream outputStream) {
         this.outputStream = outputStream;
-        this.messageWriter = new MidiMessageWriter(outputStream);
+        this.eventWriter = new MidiEventWriter(outputStream);
     }
 
     public void writeTrack(MidiTrack track) throws IOException {
         writeHeader(track.header);
-        // messageReader.resetStatusByte();
+        // eventReader.resetStatusByte();
 
-        for (MidiMessage message : track.messages) {
-            messageWriter.write(message);
+        for (MidiEvent event : track.events) {
+            eventWriter.write(event);
         }
     }
 

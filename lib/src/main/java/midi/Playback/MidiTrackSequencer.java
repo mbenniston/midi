@@ -1,23 +1,23 @@
 package midi.Playback;
 
 import midi.Data.MidiTrack;
-import midi.Data.Message.MidiMessage;
-import midi.Data.Message.MidiMessageListener;
-import midi.Data.Message.MidiMessages.MidiSystemMessages.MidiSystemSetTempo;
+import midi.Data.Event.MidiEvent;
+import midi.Data.Event.MidiEventListener;
+import midi.Data.Event.MidiEvents.MidiSystemEvents.MidiSystemSetTempo;
 
 public class MidiTrackSequencer {
     private final MidiTrack track;
     private final MidiTiming timing;
 
-    private int currentMessageIndex = 0;
+    private int currentEventIndex = 0;
     private long waitTicks = 0;
-    private MidiMessage stallMessage;
+    private MidiEvent stallEvent;
 
-    private final MidiMessageListener reciever;
+    private final MidiEventListener reciever;
 
     public MidiTrackSequencer(
             MidiTrack track,
-            MidiMessageListener reciever,
+            MidiEventListener reciever,
             MidiTiming timing) {
         this.track = track;
         this.reciever = reciever;
@@ -25,21 +25,21 @@ public class MidiTrackSequencer {
     }
 
     public void dispatchEvents() {
-        while (!isStalled() && !isOutOfMessages()) {
-            MidiMessage message = getCurrentMessage();
+        while (!isStalled() && !isOutOfEvents()) {
+            MidiEvent event = getCurrentEvent();
 
-            if (message.timeDelta == 0 || message == stallMessage) {
-                stallMessage = null;
-                reciever.onRecieve(message);
+            if (event.timeDelta == 0 || event == stallEvent) {
+                stallEvent = null;
+                reciever.onRecieve(event);
 
-                if (message instanceof MidiSystemSetTempo) {
-                    MidiSystemSetTempo tempo = (MidiSystemSetTempo) message;
+                if (event instanceof MidiSystemSetTempo) {
+                    MidiSystemSetTempo tempo = (MidiSystemSetTempo) event;
                     timing.setMicroSecondsPerBeat(tempo.microsecondsPerQuarterNote);
                 }
 
-                nextMessage();
+                nextEvent();
             } else {
-                stall(message);
+                stall(event);
             }
         }
 
@@ -52,24 +52,24 @@ public class MidiTrackSequencer {
         return waitTicks > 0;
     }
 
-    private boolean isOutOfMessages() {
-        return currentMessageIndex >= track.messages.size();
+    private boolean isOutOfEvents() {
+        return currentEventIndex >= track.events.size();
     }
 
-    private MidiMessage getCurrentMessage() {
-        return track.messages.get(currentMessageIndex);
+    private MidiEvent getCurrentEvent() {
+        return track.events.get(currentEventIndex);
     }
 
-    private void nextMessage() {
-        currentMessageIndex++;
+    private void nextEvent() {
+        currentEventIndex++;
     }
 
-    private void stall(MidiMessage message) {
-        stallMessage = message;
-        waitTicks = message.timeDelta;
+    private void stall(MidiEvent event) {
+        stallEvent = event;
+        waitTicks = event.timeDelta;
     }
 
     public boolean isFinished() {
-        return isOutOfMessages();
+        return isOutOfEvents();
     }
 }

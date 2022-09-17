@@ -1,14 +1,14 @@
 package midi.Playback;
 
 import midi.Data.MidiFile;
-import midi.Data.Message.MidiMessageListener;
+import midi.Data.Event.MidiEventListener;
 
 public class MidiSequencer {
     private final MidiTrackSequencer[] trackSequences;
 
     public MidiSequencer(
             MidiFile file,
-            MidiMessageListener reciever,
+            MidiEventListener reciever,
             MidiTiming timing) {
         trackSequences = new MidiTrackSequencer[file.tracks.size()];
 

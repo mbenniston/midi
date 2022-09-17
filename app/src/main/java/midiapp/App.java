@@ -48,11 +48,11 @@ public class App {
         writer.writeFile(file);
 
         // MidiTiming timing = new MidiTiming();
-        // MidiSequencer sequencer = new MidiSequencer(file, new MidiMessageListener() {
+        // MidiSequencer sequencer = new MidiSequencer(file, new MidiEventListener() {
 
         // @Override
-        // public void onRecieve(MidiMessage message) {
-        // System.out.println(message);
+        // public void onRecieve(MidiEvent event) {
+        // System.out.println(event);
         // }
 
         // }, timing);

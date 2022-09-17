@@ -7,22 +7,23 @@ import java.io.OutputStream;
 
 import midi.Data.MidiFile;
 import midi.Reading.MidiFileReader;
+import midi.Reading.MidiFileReader.MidiLoadError;
 import midi.Writing.MidiFileWriter;
 
 public class App {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, MidiLoadError {
         // Create custom output stream that throws an error if the output is different
         // from the input
 
         InputStream fileInputStream = App.class.getClassLoader()
-                .getResourceAsStream("midis/wii.mid");
+                .getResourceAsStream("midis/pirate.mid");
 
         MidiFile file = MidiFileReader.load(fileInputStream);
         System.out.println("file loaded");
 
         final InputStream fileInputStream2 = App.class.getClassLoader()
-                .getResourceAsStream("midis/wii.mid");
+                .getResourceAsStream("midis/pirate.mid");
 
         OutputStream s = new OutputStream() {
             long filePosition = 0;

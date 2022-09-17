@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class LoaderTests {
     }
 
     @Test
-    void LoadScale() {
+    void LoadScale() throws MidiLoadError {
         final String[] FILE_PATHS = new String[] {
                 // "test-2-tracks-type-0.mid",
                 // "test-2-tracks-type-1.mid",

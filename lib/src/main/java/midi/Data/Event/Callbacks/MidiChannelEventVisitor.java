@@ -1,8 +1,15 @@
-package midi.Data.Event;
+package midi.Data.Event.Callbacks;
 
 import midi.Data.Event.MidiEvents.*;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceAfterTouch;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceChannelPressure;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceControlChange;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOff;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOn;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoicePitchBend;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceProgramChange;
 
-public abstract class MidiEventVisitor implements MidiEventListener {
+public abstract class MidiChannelEventVisitor implements MidiChannelEventListener {
     public abstract void visit(MidiVoiceNoteOff event);
 
     public abstract void visit(MidiVoiceNoteOn event);
@@ -17,18 +24,16 @@ public abstract class MidiEventVisitor implements MidiEventListener {
 
     public abstract void visit(MidiVoicePitchBend event);
 
-    public abstract void visit(MidiMetaEvent event);
-
-    public void visit(MidiEvent event) {
+    public void visit(MidiChannelEvent event) {
         event.acceptVisitor(this);
     }
 
     @Override
-    public void onRecieve(MidiEvent event) {
+    public void onRecieve(MidiChannelEvent event) {
         visit(event);
     }
 
-    public static class DefaultMessgeVisitor extends MidiEventVisitor {
+    public static class DefaultMessgeVisitor extends MidiChannelEventVisitor {
 
         @Override
         public void visit(MidiVoiceNoteOff event) {
@@ -57,10 +62,6 @@ public abstract class MidiEventVisitor implements MidiEventListener {
 
         @Override
         public void visit(MidiVoicePitchBend event) {
-        }
-
-        @Override
-        public void visit(MidiMetaEvent event) {
         }
     }
 

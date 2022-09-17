@@ -9,15 +9,14 @@ import org.junit.jupiter.api.Test;
 
 import midi.Data.MidiFile;
 import midi.Data.MidiTrackHeader;
-import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiEvents.MidiVoiceNoteOn;
 import midi.Reading.MidiFileReader;
+import midi.Reading.MidiFileReader.MidiLoadError;
 
 public class LoaderTestScale {
     private MidiFile file;
 
     @BeforeEach
-    void LoadFile() {
+    void LoadFile() throws MidiLoadError {
         InputStream fileInputStream = LoaderTestScale.class.getClassLoader()
                 .getResourceAsStream("scale.mid");
 

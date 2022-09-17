@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import midi.Reading.MidiSystemEventReader;
+import midi.Reading.MidiMetaEventReader;
 import midi.Reading.MidiEventReader.MidiEventHeader;
 
 public class SystemEventReaderTests {
@@ -19,9 +19,9 @@ public class SystemEventReaderTests {
         eventHeader.timeDelta = 0;
 
         assertThrows(IOException.class, () -> {
-            new MidiSystemEventReader(
+            new MidiMetaEventReader(
                     new ByteArrayInputStream(new byte[] {}))
-                    .readSystemEvent(eventHeader);
+                    .readMetaEvent(eventHeader);
         });
     }
 
@@ -36,9 +36,9 @@ public class SystemEventReaderTests {
         };
 
         assertThrows(IOException.class, () -> {
-            new MidiSystemEventReader(
+            new MidiMetaEventReader(
                     new ByteArrayInputStream(bytes))
-                    .readSystemEvent(eventHeader);
+                    .readMetaEvent(eventHeader);
         });
     }
 

@@ -52,7 +52,7 @@ public class MidiFileReader {
         return header;
     }
 
-    public static class MidiLoadError extends RuntimeException {
+    public static class MidiLoadError extends Exception {
 
         public MidiLoadError() {
             super("Could not load midi");

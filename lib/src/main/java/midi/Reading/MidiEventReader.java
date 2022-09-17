@@ -1,162 +1,67 @@
 package midi.Reading;
 
-import static midi.Reading.ReadingUtils.*;
-
 import java.io.IOException;
 import java.io.PushbackInputStream;
 
-import midi.Data.MidiEventName;
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiEvents.*;
 import midi.Reading.MidiFileReader.MidiLoadError;
+
+import static midi.Reading.ReadingUtils.*;
 
 public class MidiEventReader {
     private final PushbackInputStream source;
 
-    private final MidiSystemEventReader systemEventReader;
+    private final MidiChannelEventReader channelEventReader;
+    private final MidiMetaEventReader metaEventReader;
+    private final MidiSystemExclusiveReader systemEventReader;
 
     private byte lastStatusByte = 0;
 
     public MidiEventReader(PushbackInputStream source) {
         this.source = source;
-        this.systemEventReader = new MidiSystemEventReader(source);
+        channelEventReader = new MidiChannelEventReader(source);
+        metaEventReader = new MidiMetaEventReader(source);
+        systemEventReader = new MidiSystemExclusiveReader(source);
     }
 
-    public void resetStatusByte() {
-        lastStatusByte = 0;
+    public MidiEvent readEvent() throws IOException, MidiLoadError {
+        long timeDelta = readVariableLength(source);
+        int status = byteToInt(readStatus());
+
+        MidiEventHeader eventHeader = new MidiEventHeader();
+        eventHeader.status = status;
+        eventHeader.timeDelta = timeDelta;
+
+        switch (eventHeader.status) {
+            case 0xFF:
+                return metaEventReader.readMetaEvent(eventHeader);
+            case 0xF0:
+            case 0xF7:
+                return systemEventReader.readSystemEvent(eventHeader);
+            default:
+                return channelEventReader.readChannelEvent(eventHeader);
+        }
     }
 
-    public MidiEvent readEvent() throws IOException {
-        long statusTimeDelta = readVariableLength(source);
+    private byte readStatus() throws IOException {
         byte status = readByte(source);
 
         if ((byteToInt(status) & 0x80) == 0) {
-            // use last status
             source.unread(status);
             status = lastStatusByte;
         } else {
             lastStatusByte = status;
         }
 
-        MidiEventName eventName = MidiEventName.getNameFromID((byte) (byteToInt(status) & 0xF0));
-
-        MidiEventHeader eventHeader = new MidiEventHeader();
-        eventHeader.status = status;
-        eventHeader.timeDelta = statusTimeDelta;
-
-        MidiEvent event;
-
-        switch (eventName) {
-            case VoiceNoteOff: {
-                event = readVoiceNoteOff(eventHeader);
-                break;
-            }
-            case VoiceNoteOn: {
-                event = readVoiceNoteOn(eventHeader);
-                break;
-            }
-            case VoiceAfterTouch: {
-                event = readVoiceAfterTouch(eventHeader);
-                break;
-            }
-            case VoiceControlChange: {
-                event = readVoiceControlChange(eventHeader);
-                break;
-            }
-            case VoiceProgramChange: {
-                event = readVoiceProgramChange(eventHeader);
-                break;
-            }
-            case VoiceChannelPressure: {
-                event = readVoiceChannelPressure(eventHeader);
-                break;
-            }
-            case VoicePitchBend: {
-                event = readVoicePitchBend(eventHeader);
-                break;
-            }
-            case SystemExclusive: {
-                event = readSystemExclusive(eventHeader);
-                break;
-            }
-            default:
-                throw new MidiLoadError();
-        }
-
-        return event;
+        return status;
     }
 
-    public MidiVoiceNoteOff readVoiceNoteOff(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceNoteOff event = new MidiVoiceNoteOff();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.noteId = byteToInt(readByte(source));
-        event.noteVelocity = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoiceNoteOn readVoiceNoteOn(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceNoteOn event = new MidiVoiceNoteOn();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.noteId = byteToInt(readByte(source));
-        event.noteVelocity = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoiceAfterTouch readVoiceAfterTouch(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceAfterTouch event = new MidiVoiceAfterTouch();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.noteId = byteToInt(readByte(source));
-        event.noteVelocity = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoiceControlChange readVoiceControlChange(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceControlChange event = new MidiVoiceControlChange();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.noteId = byteToInt(readByte(source));
-        event.noteVelocity = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoiceProgramChange readVoiceProgramChange(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceProgramChange event = new MidiVoiceProgramChange();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.programId = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoiceChannelPressure readVoiceChannelPressure(MidiEventHeader eventHeader) throws IOException {
-        MidiVoiceChannelPressure event = new MidiVoiceChannelPressure();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.channelPressure = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiVoicePitchBend readVoicePitchBend(MidiEventHeader eventHeader) throws IOException {
-        MidiVoicePitchBend event = new MidiVoicePitchBend();
-        event.channel = getChannelFromStatus(eventHeader.status);
-        event.nLS7B = byteToInt(readByte(source));
-        event.nMS7B = byteToInt(readByte(source));
-        event.timeDelta = eventHeader.timeDelta;
-        return event;
-    }
-
-    public MidiMetaEvent readSystemExclusive(MidiEventHeader eventHeader) throws IOException {
-        return systemEventReader.readSystemEvent(eventHeader);
-    }
-
-    private static int getChannelFromStatus(byte status) {
-        return byteToInt(status) & 0x0F;
+    public void resetStatusByte() {
+        lastStatusByte = 0;
     }
 
     public static class MidiEventHeader {
-        public byte status;
+        public int status;
         public long timeDelta;
     }
 }

@@ -1,4 +1,4 @@
-package midi.Data.Event;
+package midi.Data.Event.Callbacks;
 
 import midi.Data.Event.MidiEvents.MidiMetaEvent;
 import midi.Data.Event.MidiEvents.MidiMetaEvents.*;
@@ -34,10 +34,6 @@ public abstract class MidiMetaEventVisitor implements MidiMetaEventListener {
     public abstract void visit(MidiMetaKeySignature event);
 
     public abstract void visit(MidiMetaSequencerSpecific event);
-
-    public abstract void visit(MidiMetaManufacturerStart event);
-
-    public abstract void visit(MidiMetaManufacturerEnd event);
 
     public abstract void visit(MidiMetaUnknown event);
 
@@ -110,16 +106,6 @@ public abstract class MidiMetaEventVisitor implements MidiMetaEventListener {
 
         @Override
         public void visit(MidiMetaSequencerSpecific event) {
-        }
-
-        @Override
-        public void visit(MidiMetaManufacturerStart event) {
-
-        }
-
-        @Override
-        public void visit(MidiMetaManufacturerEnd event) {
-
         }
 
         @Override

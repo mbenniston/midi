@@ -1,5 +1,7 @@
 package midi.Data.Event;
 
+import midi.Data.Event.Callbacks.MidiEventVisitor;
+
 public abstract class MidiEvent {
     public static final long BYTES_PER_SINGLE = 1;
     public static final long BYTES_PER_USHORT = 2;

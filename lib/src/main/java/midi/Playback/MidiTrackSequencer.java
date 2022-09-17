@@ -2,7 +2,7 @@ package midi.Playback;
 
 import midi.Data.MidiTrack;
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiEventListener;
+import midi.Data.Event.Callbacks.MidiEventListener;
 import midi.Data.Event.MidiEvents.MidiMetaEvents.MidiMetaSetTempo;
 
 public class MidiTrackSequencer {

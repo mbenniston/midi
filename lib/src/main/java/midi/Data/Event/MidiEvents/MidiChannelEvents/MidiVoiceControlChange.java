@@ -1,15 +1,16 @@
-package midi.Data.Event.MidiEvents;
+package midi.Data.Event.MidiEvents.MidiChannelEvents;
 
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiEventVisitor;
+import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
+import midi.Data.Event.MidiEvents.MidiChannelEvent;
 
-public class MidiVoiceControlChange extends MidiEvent {
+public class MidiVoiceControlChange extends MidiChannelEvent {
     public int channel;
     public int noteId;
     public int noteVelocity;
 
     @Override
-    public void acceptVisitor(MidiEventVisitor visitor) {
+    public void acceptVisitor(MidiChannelEventVisitor visitor) {
         visitor.visit(this);
     }
 

@@ -20,7 +20,6 @@ public class MidiTrackWriter {
 
     public void writeTrack(MidiTrack track) throws IOException {
         writeHeader(track.header);
-        // eventReader.resetStatusByte();
 
         for (MidiEvent event : track.events) {
             eventWriter.write(event);

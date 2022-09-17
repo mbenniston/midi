@@ -1,7 +1,7 @@
 package midi.Playback;
 
 import midi.Data.MidiFile;
-import midi.Data.Event.MidiEventListener;
+import midi.Data.Event.Callbacks.MidiEventListener;
 
 public class MidiSequencer {
     private final MidiTrackSequencer[] trackSequences;

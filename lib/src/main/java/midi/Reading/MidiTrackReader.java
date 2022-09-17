@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import midi.Data.MidiTrack;
 import midi.Data.MidiTrackHeader;
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiEvents.MidiSystemEvents.MidiSystemEndOfTrack;
+import midi.Data.Event.MidiEvents.MidiMetaEvents.MidiMetaEndOfTrack;
 import midi.Reading.MidiFileReader.MidiLoadError;
 
 public class MidiTrackReader {
@@ -34,7 +34,7 @@ public class MidiTrackReader {
 
         eventReader.resetStatusByte();
 
-        while (!hasReachedEndOfStream() && !(lastEventRead instanceof MidiSystemEndOfTrack)) {
+        while (!hasReachedEndOfStream() && !(lastEventRead instanceof MidiMetaEndOfTrack)) {
             lastEventRead = eventReader.readEvent();
             if (lastEventRead != null) {
                 track.events.add(lastEventRead);

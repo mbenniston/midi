@@ -3,14 +3,14 @@ package midi.Writing;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import midi.Data.MidiSystemEventName;
-import midi.Data.Event.MidiSystemEventVisitor;
-import midi.Data.Event.MidiEvents.MidiSystemExclusive;
-import midi.Data.Event.MidiEvents.MidiSystemEvents.*;
+import midi.Data.MidiMetaEventName;
+import midi.Data.Event.MidiMetaEventVisitor;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
+import midi.Data.Event.MidiEvents.MidiMetaEvents.*;
 
 import static midi.Writing.WritingUtils.*;
 
-public class MidiSystemEventWriter extends MidiSystemEventVisitor {
+public class MidiSystemEventWriter extends MidiMetaEventVisitor {
     private OutputStream outputStream;
 
     private IOException exception = null;
@@ -20,10 +20,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemSequence event) {
+    public void visit(MidiMetaSequence event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaSequence.value);
+            writeByte(outputStream, MidiMetaEventName.Sequence.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
             writeByte(outputStream, event.sequence1);
             writeByte(outputStream, event.sequence2);
@@ -33,10 +33,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemText event) {
+    public void visit(MidiMetaText event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaText.value);
+            writeByte(outputStream, MidiMetaEventName.Text.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.text);
@@ -46,10 +46,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemCopyright event) {
+    public void visit(MidiMetaCopyright event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaCopyright.value);
+            writeByte(outputStream, MidiMetaEventName.Copyright.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.copyright);
@@ -59,11 +59,11 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemTrackName event) {
+    public void visit(MidiMetaTrackName event) {
         try {
             System.out.println(event.trackName);
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaTrackName.value);
+            writeByte(outputStream, MidiMetaEventName.TrackName.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.trackName);
@@ -73,10 +73,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemInstrumentName event) {
+    public void visit(MidiMetaInstrumentName event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaInstrumentName.value);
+            writeByte(outputStream, MidiMetaEventName.InstrumentName.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.instrumentName);
@@ -86,10 +86,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemLyrics event) {
+    public void visit(MidiMetaLyrics event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaLyrics.value);
+            writeByte(outputStream, MidiMetaEventName.Lyrics.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.lyrics);
@@ -100,10 +100,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemMarker event) {
+    public void visit(MidiMetaMarker event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaMarker.value);
+            writeByte(outputStream, MidiMetaEventName.Marker.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.marker);
@@ -113,10 +113,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemCuePoint event) {
+    public void visit(MidiMetaCuePoint event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaCuePoint.value);
+            writeByte(outputStream, MidiMetaEventName.CuePoint.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.cue);
@@ -126,10 +126,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemChannelPrefix event) {
+    public void visit(MidiMetaChannelPrefix event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaChannelPrefix.value);
+            writeByte(outputStream, MidiMetaEventName.ChannelPrefix.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeByte(outputStream, event.prefix);
@@ -139,10 +139,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemEndOfTrack event) {
+    public void visit(MidiMetaEndOfTrack event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaEndOfTrack.value);
+            writeByte(outputStream, MidiMetaEventName.EndOfTrack.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
         } catch (IOException e) {
             setError(e);
@@ -150,10 +150,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemSetTempo event) {
+    public void visit(MidiMetaSetTempo event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaSetTempo.value);
+            writeByte(outputStream, MidiMetaEventName.SetTempo.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeUnsignedIntTo3Bytes(outputStream, event.microsecondsPerQuarterNote);
@@ -163,10 +163,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemSMPTEOffset event) {
+    public void visit(MidiMetaSMPTEOffset event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaSMPTEOffset.value);
+            writeByte(outputStream, MidiMetaEventName.SMPTEOffset.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeByte(outputStream, event.hours);
@@ -180,10 +180,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemTimeSignature event) {
+    public void visit(MidiMetaTimeSignature event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaTimeSignature.value);
+            writeByte(outputStream, MidiMetaEventName.TimeSignature.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeByte(outputStream, event.timeSignitureUpper);
@@ -197,10 +197,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemKeySignature event) {
+    public void visit(MidiMetaKeySignature event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaKeySignature.value);
+            writeByte(outputStream, MidiMetaEventName.KeySignature.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeByte(outputStream, event.keySigniture);
@@ -211,10 +211,10 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemSequencerSpecific event) {
+    public void visit(MidiMetaSequencerSpecific event) {
         try {
             writeByte(outputStream, 0xFF);
-            writeByte(outputStream, MidiSystemEventName.MetaSequencerSpecific.value);
+            writeByte(outputStream, MidiMetaEventName.SequencerSpecific.value);
             writeVariableLength(outputStream, event.getLengthInBytes());
 
             writeString(outputStream, event.specific);
@@ -224,7 +224,7 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemManufacturerStart event) {
+    public void visit(MidiMetaManufacturerStart event) {
         try {
             writeByte(outputStream, 0xF0);
             writeVariableLength(outputStream, event.getLengthInBytes());
@@ -236,7 +236,7 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemManufacturerEnd event) {
+    public void visit(MidiMetaManufacturerEnd event) {
         try {
             writeByte(outputStream, 0xF7);
             outputStream.write(event.dataBlob);
@@ -247,7 +247,7 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemUnknown event) {
+    public void visit(MidiMetaUnknown event) {
         try {
             writeByte(outputStream, 0xFF);
             writeByte(outputStream, event.type);
@@ -275,7 +275,7 @@ public class MidiSystemEventWriter extends MidiSystemEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemExclusive event) {
+    public void visit(MidiMetaEvent event) {
         super.visit(event);
     }
 

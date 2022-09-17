@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import midi.Data.MidiEventName;
 import midi.Data.Event.MidiEvent;
 import midi.Data.Event.MidiEventVisitor;
-import midi.Data.Event.MidiEvents.MidiSystemExclusive;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
 import midi.Data.Event.MidiEvents.MidiVoiceAfterTouch;
 import midi.Data.Event.MidiEvents.MidiVoiceChannelPressure;
 import midi.Data.Event.MidiEvents.MidiVoiceControlChange;
@@ -103,7 +103,7 @@ public class MidiEventWriter extends MidiEventVisitor {
     }
 
     @Override
-    public void visit(MidiSystemExclusive event) {
+    public void visit(MidiMetaEvent event) {
         systemEventWriter.visit(event);
 
         resetRunningStatus();

@@ -1,10 +1,10 @@
-package midi.Data.Event.MidiEvents.MidiSystemEvents;
+package midi.Data.Event.MidiEvents.MidiMetaEvents;
 
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiSystemEventVisitor;
-import midi.Data.Event.MidiEvents.MidiSystemExclusive;
+import midi.Data.Event.MidiMetaEventVisitor;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
 
-public class MidiSystemSMPTEOffset extends MidiSystemExclusive {
+public class MidiMetaSMPTEOffset extends MidiMetaEvent {
     public int hours;
     public int minutes;
     public int seconds;
@@ -12,7 +12,7 @@ public class MidiSystemSMPTEOffset extends MidiSystemExclusive {
     public int fractionalFrames;
 
     @Override
-    public void acceptVisitor(MidiSystemEventVisitor visitor) {
+    public void acceptVisitor(MidiMetaEventVisitor visitor) {
         visitor.visit(this);
     }
 

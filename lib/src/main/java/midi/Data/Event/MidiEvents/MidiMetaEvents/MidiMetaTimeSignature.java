@@ -1,17 +1,17 @@
-package midi.Data.Event.MidiEvents.MidiSystemEvents;
+package midi.Data.Event.MidiEvents.MidiMetaEvents;
 
 import midi.Data.Event.MidiEvent;
-import midi.Data.Event.MidiSystemEventVisitor;
-import midi.Data.Event.MidiEvents.MidiSystemExclusive;
+import midi.Data.Event.MidiMetaEventVisitor;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
 
-public class MidiSystemTimeSignature extends MidiSystemExclusive {
+public class MidiMetaTimeSignature extends MidiMetaEvent {
     public int timeSignitureUpper;
     public int timeSignitureLower;
     public int clocksPerTick;
     public int ticks32per24Clocks;
 
     @Override
-    public void acceptVisitor(MidiSystemEventVisitor visitor) {
+    public void acceptVisitor(MidiMetaEventVisitor visitor) {
         visitor.visit(this);
     }
 

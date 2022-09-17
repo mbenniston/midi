@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import midi.Data.MidiSystemEventName;
-import midi.Data.Event.MidiEvents.MidiSystemExclusive;
-import midi.Data.Event.MidiEvents.MidiSystemEvents.*;
+import midi.Data.MidiMetaEventName;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
+import midi.Data.Event.MidiEvents.MidiMetaEvents.*;
 import midi.Reading.MidiFileReader.MidiLoadError;
 import midi.Reading.MidiEventReader.MidiEventHeader;
 
@@ -20,7 +20,7 @@ public class MidiSystemEventReader {
         this.source = source;
     }
 
-    public MidiSystemExclusive readSystemEvent(MidiEventHeader eventHeader) throws IOException {
+    public MidiMetaEvent readSystemEvent(MidiEventHeader eventHeader) throws IOException {
         int statusInt = byteToInt(eventHeader.status);
 
         if (statusInt == 0xFF) {
@@ -31,69 +31,69 @@ public class MidiSystemEventReader {
             systemEventHeader.eventHeader = eventHeader;
             systemEventHeader.length = length;
 
-            MidiSystemExclusive systemEvent;
+            MidiMetaEvent systemEvent;
 
             try {
-                MidiSystemEventName systemEventName = MidiSystemEventName.getNameFromID(type);
+                MidiMetaEventName systemEventName = MidiMetaEventName.getNameFromID(type);
 
                 switch (systemEventName) {
-                    case MetaSequence: {
+                    case Sequence: {
                         systemEvent = readSystemSequence(systemEventHeader);
                         break;
                     }
-                    case MetaText: {
+                    case Text: {
                         systemEvent = readSystemText(systemEventHeader);
                         break;
                     }
-                    case MetaCopyright: {
+                    case Copyright: {
                         systemEvent = readSystemCopyright(systemEventHeader);
                         break;
                     }
-                    case MetaTrackName: {
+                    case TrackName: {
                         systemEvent = readSystemTrackName(systemEventHeader);
                         break;
                     }
-                    case MetaInstrumentName: {
+                    case InstrumentName: {
                         systemEvent = readSystemInstrumentName(systemEventHeader);
                         break;
                     }
-                    case MetaLyrics: {
+                    case Lyrics: {
                         systemEvent = readSystemLyrics(systemEventHeader);
                         break;
                     }
-                    case MetaMarker: {
+                    case Marker: {
                         systemEvent = readSystemMarker(systemEventHeader);
                         break;
                     }
-                    case MetaCuePoint: {
+                    case CuePoint: {
                         systemEvent = readSystemCuePoint(systemEventHeader);
                         break;
                     }
-                    case MetaChannelPrefix: {
+                    case ChannelPrefix: {
                         systemEvent = readSystemChannelPrefix(systemEventHeader);
                         break;
                     }
-                    case MetaEndOfTrack: {
+                    case EndOfTrack: {
                         systemEvent = readSystemEndOfTrack(systemEventHeader);
                         break;
                     }
-                    case MetaSetTempo: {
+                    case SetTempo: {
                         systemEvent = readSystemSetTempo(systemEventHeader);
                         break;
                     }
-                    case MetaSMPTEOffset: {
+                    case SMPTEOffset: {
                         systemEvent = readSystemSMPTEOffset(systemEventHeader);
                         break;
                     }
-                    case MetaTimeSignature: {
+                    case TimeSignature: {
                         systemEvent = readSystemTimeSignature(systemEventHeader);
                         break;
                     }
-                    case MetaKeySignature: {
+                    case KeySignature: {
                         systemEvent = readSystemKeySignature(systemEventHeader);
                         break;
                     }
-                    case MetaSequencerSpecific: {
+                    case SequencerSpecific: {
                         systemEvent = readSystemSequencerSpecific(systemEventHeader);
                         break;
                     }
@@ -124,87 +124,87 @@ public class MidiSystemEventReader {
         throw new IOException("Unrecognised system event type");
     }
 
-    public MidiSystemSequence readSystemSequence(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemSequence event = new MidiSystemSequence();
+    public MidiMetaSequence readSystemSequence(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaSequence event = new MidiMetaSequence();
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         event.sequence1 = byteToInt(readByte(source));
         event.sequence2 = byteToInt(readByte(source));
         return event;
     }
 
-    public MidiSystemText readSystemText(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemText event = new MidiSystemText();
+    public MidiMetaText readSystemText(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaText event = new MidiMetaText();
         event.text = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemCopyright readSystemCopyright(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemCopyright event = new MidiSystemCopyright();
+    public MidiMetaCopyright readSystemCopyright(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaCopyright event = new MidiMetaCopyright();
         event.copyright = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemTrackName readSystemTrackName(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemTrackName event = new MidiSystemTrackName();
+    public MidiMetaTrackName readSystemTrackName(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaTrackName event = new MidiMetaTrackName();
         event.trackName = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemInstrumentName readSystemInstrumentName(MidiSystemEventHeader systemEventHeader)
+    public MidiMetaInstrumentName readSystemInstrumentName(MidiSystemEventHeader systemEventHeader)
             throws IOException {
-        MidiSystemInstrumentName event = new MidiSystemInstrumentName();
+        MidiMetaInstrumentName event = new MidiMetaInstrumentName();
         event.instrumentName = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemLyrics readSystemLyrics(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemLyrics event = new MidiSystemLyrics();
+    public MidiMetaLyrics readSystemLyrics(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaLyrics event = new MidiMetaLyrics();
         event.lyrics = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemMarker readSystemMarker(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemMarker event = new MidiSystemMarker();
+    public MidiMetaMarker readSystemMarker(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaMarker event = new MidiMetaMarker();
         event.marker = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemCuePoint readSystemCuePoint(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemCuePoint event = new MidiSystemCuePoint();
+    public MidiMetaCuePoint readSystemCuePoint(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaCuePoint event = new MidiMetaCuePoint();
         event.cue = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemChannelPrefix readSystemChannelPrefix(MidiSystemEventHeader systemEventHeader)
+    public MidiMetaChannelPrefix readSystemChannelPrefix(MidiSystemEventHeader systemEventHeader)
             throws IOException {
-        MidiSystemChannelPrefix event = new MidiSystemChannelPrefix();
+        MidiMetaChannelPrefix event = new MidiMetaChannelPrefix();
         event.prefix = readByte(source);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemEndOfTrack readSystemEndOfTrack(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemEndOfTrack event = new MidiSystemEndOfTrack();
+    public MidiMetaEndOfTrack readSystemEndOfTrack(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaEndOfTrack event = new MidiMetaEndOfTrack();
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemSetTempo readSystemSetTempo(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemSetTempo event = new MidiSystemSetTempo();
+    public MidiMetaSetTempo readSystemSetTempo(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaSetTempo event = new MidiMetaSetTempo();
         event.microsecondsPerQuarterNote = readUnsignedIntFrom3Bytes(source);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemSMPTEOffset readSystemSMPTEOffset(MidiSystemEventHeader systemEventHeader) throws IOException {
-        MidiSystemSMPTEOffset event = new MidiSystemSMPTEOffset();
+    public MidiMetaSMPTEOffset readSystemSMPTEOffset(MidiSystemEventHeader systemEventHeader) throws IOException {
+        MidiMetaSMPTEOffset event = new MidiMetaSMPTEOffset();
         event.hours = byteToInt(readByte(source));
         event.minutes = byteToInt(readByte(source));
         event.seconds = byteToInt(readByte(source));
@@ -215,9 +215,9 @@ public class MidiSystemEventReader {
         return event;
     }
 
-    public MidiSystemTimeSignature readSystemTimeSignature(MidiSystemEventHeader systemEventHeader)
+    public MidiMetaTimeSignature readSystemTimeSignature(MidiSystemEventHeader systemEventHeader)
             throws IOException {
-        MidiSystemTimeSignature event = new MidiSystemTimeSignature();
+        MidiMetaTimeSignature event = new MidiMetaTimeSignature();
         event.timeSignitureUpper = byteToInt(readByte(source));
         event.timeSignitureLower = byteToInt(readByte(source));
         event.clocksPerTick = byteToInt(readByte(source));
@@ -227,26 +227,26 @@ public class MidiSystemEventReader {
         return event;
     }
 
-    public MidiSystemKeySignature readSystemKeySignature(MidiSystemEventHeader systemEventHeader)
+    public MidiMetaKeySignature readSystemKeySignature(MidiSystemEventHeader systemEventHeader)
             throws IOException {
-        MidiSystemKeySignature event = new MidiSystemKeySignature();
+        MidiMetaKeySignature event = new MidiMetaKeySignature();
         event.keySigniture = byteToInt(readByte(source));
         event.minorKey = byteToInt(readByte(source));
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemSequencerSpecific readSystemSequencerSpecific(MidiSystemEventHeader systemEventHeader)
+    public MidiMetaSequencerSpecific readSystemSequencerSpecific(MidiSystemEventHeader systemEventHeader)
             throws IOException {
-        MidiSystemSequencerSpecific event = new MidiSystemSequencerSpecific();
+        MidiMetaSequencerSpecific event = new MidiMetaSequencerSpecific();
         event.specific = readString(source, systemEventHeader.length);
         event.timeDelta = systemEventHeader.eventHeader.timeDelta;
         return event;
     }
 
-    public MidiSystemManufacturerStart readSystemManufacturerStart()
+    public MidiMetaManufacturerStart readSystemManufacturerStart()
             throws IOException {
-        MidiSystemManufacturerStart event = new MidiSystemManufacturerStart();
+        MidiMetaManufacturerStart event = new MidiMetaManufacturerStart();
 
         ArrayList<Byte> bytes = new ArrayList<>();
         bytes.add((byte) 0xF0);
@@ -263,9 +263,9 @@ public class MidiSystemEventReader {
         return event;
     }
 
-    public MidiSystemManufacturerEnd readSystemManufacturerEnd()
+    public MidiMetaManufacturerEnd readSystemManufacturerEnd()
             throws IOException {
-        MidiSystemManufacturerEnd event = new MidiSystemManufacturerEnd();
+        MidiMetaManufacturerEnd event = new MidiMetaManufacturerEnd();
         final ArrayList<Byte> bytes = new ArrayList<>();
         byte currentByte;
         do {
@@ -279,9 +279,9 @@ public class MidiSystemEventReader {
         return event;
     }
 
-    public MidiSystemUnknown readSystemUnknown(byte type, long length)
+    public MidiMetaUnknown readSystemUnknown(byte type, long length)
             throws IOException {
-        MidiSystemUnknown event = new MidiSystemUnknown();
+        MidiMetaUnknown event = new MidiMetaUnknown();
         if (length > Integer.MAX_VALUE) {
             throw new IOException("Cannot allocate that many bytes");
         }

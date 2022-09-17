@@ -147,7 +147,7 @@ public class MidiEventReader {
         return event;
     }
 
-    public MidiSystemExclusive readSystemExclusive(MidiEventHeader eventHeader) throws IOException {
+    public MidiMetaEvent readSystemExclusive(MidiEventHeader eventHeader) throws IOException {
         return systemEventReader.readSystemEvent(eventHeader);
     }
 

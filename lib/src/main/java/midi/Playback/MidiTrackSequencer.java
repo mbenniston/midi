@@ -3,7 +3,7 @@ package midi.Playback;
 import midi.Data.MidiTrack;
 import midi.Data.Event.MidiEvent;
 import midi.Data.Event.MidiEventListener;
-import midi.Data.Event.MidiEvents.MidiSystemEvents.MidiSystemSetTempo;
+import midi.Data.Event.MidiEvents.MidiMetaEvents.MidiMetaSetTempo;
 
 public class MidiTrackSequencer {
     private final MidiTrack track;
@@ -32,8 +32,8 @@ public class MidiTrackSequencer {
                 stallEvent = null;
                 reciever.onRecieve(event);
 
-                if (event instanceof MidiSystemSetTempo) {
-                    MidiSystemSetTempo tempo = (MidiSystemSetTempo) event;
+                if (event instanceof MidiMetaSetTempo) {
+                    MidiMetaSetTempo tempo = (MidiMetaSetTempo) event;
                     timing.setMicroSecondsPerBeat(tempo.microsecondsPerQuarterNote);
                 }
 

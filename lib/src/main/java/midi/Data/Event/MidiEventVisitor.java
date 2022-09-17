@@ -17,7 +17,7 @@ public abstract class MidiEventVisitor implements MidiEventListener {
 
     public abstract void visit(MidiVoicePitchBend event);
 
-    public abstract void visit(MidiSystemExclusive event);
+    public abstract void visit(MidiMetaEvent event);
 
     public void visit(MidiEvent event) {
         event.acceptVisitor(this);
@@ -60,7 +60,7 @@ public abstract class MidiEventVisitor implements MidiEventListener {
         }
 
         @Override
-        public void visit(MidiSystemExclusive event) {
+        public void visit(MidiMetaEvent event) {
         }
     }
 

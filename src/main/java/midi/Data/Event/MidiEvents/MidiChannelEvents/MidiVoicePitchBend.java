@@ -5,7 +5,6 @@ import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
 import midi.Data.Event.MidiEvents.MidiChannelEvent;
 
 public class MidiVoicePitchBend extends MidiChannelEvent {
-    public int channel;
     public int nLS7B;
     public int nMS7B;
 

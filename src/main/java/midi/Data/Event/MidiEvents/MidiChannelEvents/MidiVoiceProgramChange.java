@@ -5,7 +5,6 @@ import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
 import midi.Data.Event.MidiEvents.MidiChannelEvent;
 
 public class MidiVoiceProgramChange extends MidiChannelEvent {
-    public int channel;
     public int programId;
 
     @Override

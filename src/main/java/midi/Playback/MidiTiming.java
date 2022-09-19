@@ -2,9 +2,6 @@ package midi.Playback;
 
 public class MidiTiming {
     private double currentTime = 0.0;
-    private long ticks = 0;
-    private long deltaTicks = 0;
-    private double lastTickTime = 0;
 
     private long ticksPerBeat = 60;
     private long microSecondsPerBeat = 500000;
@@ -18,20 +15,6 @@ public class MidiTiming {
 
     public void update(double time) {
         currentTime = time;
-
-        double timeSinceLastTick = currentTime - lastTickTime;
-        double timeSinceLastTickMicroSeconds = secondsToMicroSeconds(timeSinceLastTick);
-
-        deltaTicks = 0;
-
-        if (timeSinceLastTickMicroSeconds > microSecondsPerTick) {
-            deltaTicks = (long) (timeSinceLastTickMicroSeconds / microSecondsPerTick);
-
-            double timeLeftOver = timeSinceLastTickMicroSeconds - (deltaTicks * microSecondsPerTick);
-            lastTickTime = currentTime - microSecondsToSeconds(timeLeftOver);
-        }
-
-        ticks += deltaTicks;
     }
 
     public void setTicksPerBeat(long ticksPerBeat) {
@@ -49,37 +32,41 @@ public class MidiTiming {
         return secondsToMicroSeconds(60.0) / microSecondsPerBeat;
     }
 
-    public long getTicks() {
-        return ticks;
-    }
-
-    public long getDeltaTicks() {
-        return deltaTicks;
-    }
-
     public double getCurrentTime() {
         return currentTime;
     }
 
-    private static double secondsToMicroSeconds(double seconds) {
+    public double getMicroSecondsPerTick() {
+        return microSecondsPerTick;
+    }
+
+    public double ticksToTime(double ticks) {
+        return MidiTiming.ticksToTime(ticks, microSecondsPerTick);
+    }
+
+    public double timeToTicks(double seconds) {
+        return MidiTiming.timeToTicks(seconds, microSecondsPerTick);
+    }
+
+    public static double secondsToMicroSeconds(double seconds) {
         return seconds * 1000000.0;
     }
 
-    private static double microSecondsToSeconds(double microSeconds) {
+    public static double microSecondsToSeconds(double microSeconds) {
         return microSeconds / 1000000.0;
+    }
+
+    public static double ticksToTime(double ticks, double microSecondsPerTick) {
+        return microSecondsToSeconds(ticks * microSecondsPerTick);
+    }
+
+    public static double timeToTicks(double seconds, double microSecondsPerTick) {
+        return secondsToMicroSeconds(seconds) / microSecondsPerTick;
     }
 
     public class MidiTimingView {
         public double getCurrentTime() {
             return MidiTiming.this.getCurrentTime();
-        }
-
-        public long getTicks() {
-            return MidiTiming.this.getTicks();
-        }
-
-        public long getDeltaTicks() {
-            return MidiTiming.this.getDeltaTicks();
         }
     }
 }

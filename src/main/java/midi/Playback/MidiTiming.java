@@ -9,6 +9,13 @@ public class MidiTiming {
 
     public final MidiTimingView view;
 
+    public void reset() {
+        currentTime = 0;
+        ticksPerBeat = 60;
+        microSecondsPerBeat = 500000;
+        microSecondsPerTick = microSecondsPerBeat / (double) ticksPerBeat;
+    }
+
     public MidiTiming() {
         view = new MidiTimingView();
     }

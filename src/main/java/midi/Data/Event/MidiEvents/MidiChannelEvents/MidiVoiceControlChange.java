@@ -5,8 +5,8 @@ import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
 import midi.Data.Event.MidiEvents.MidiChannelEvent;
 
 public class MidiVoiceControlChange extends MidiChannelEvent {
-    public int noteId;
-    public int noteVelocity;
+    public int controlId;
+    public int controlValue;
 
     @Override
     public void acceptVisitor(MidiChannelEventVisitor visitor) {

@@ -77,8 +77,8 @@ public class MidiChannelEventReader {
     public MidiVoiceControlChange readVoiceControlChange(MidiEventHeader eventHeader) throws IOException {
         MidiVoiceControlChange event = new MidiVoiceControlChange();
         event.channel = getChannelFromStatus(eventHeader.status);
-        event.noteId = byteToInt(readByte(source));
-        event.noteVelocity = byteToInt(readByte(source));
+        event.controlId = byteToInt(readByte(source));
+        event.controlValue = byteToInt(readByte(source));
         event.timeDelta = eventHeader.timeDelta;
         return event;
     }

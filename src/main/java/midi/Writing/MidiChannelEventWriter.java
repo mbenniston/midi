@@ -62,8 +62,8 @@ public class MidiChannelEventWriter extends MidiChannelEventVisitor {
     public void visit(MidiVoiceControlChange event) {
         try {
             writeStatus(MidiChannelEventName.VoiceControlChange, event.channel);
-            writeByte(outputStream, event.noteId);
-            writeByte(outputStream, event.noteVelocity);
+            writeByte(outputStream, event.controlId);
+            writeByte(outputStream, event.controlValue);
         } catch (IOException e) {
             setError(e);
         }

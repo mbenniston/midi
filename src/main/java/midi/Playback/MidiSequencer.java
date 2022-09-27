@@ -3,44 +3,31 @@ package midi.Playback;
 import midi.Data.MidiFile;
 
 public class MidiSequencer {
-    private MidiTiming timing;
-    private MidiTrackSequencer[] tracks;
+    private final MidiTiming timing;
+    private final MidiEventExecutor receiver;
+
+    private MidiFile file;
+    private MidiTrackSequencer[] trackSequencers;
 
     public MidiSequencer(
             MidiFile file,
-            MidiEventExecutor reciever,
+            MidiEventExecutor receiver,
             MidiTiming timing) {
         this.timing = timing;
+        this.receiver = receiver;
 
-        tracks = new MidiTrackSequencer[file.tracks.size()];
-
-        for (int i = 0; i < file.tracks.size(); i++) {
-            tracks[i] = new MidiTrackSequencer(
-                    file.tracks.get(i),
-                    reciever,
-                    timing);
-        }
+        setFile(file);
     }
 
-    public boolean isFinished() {
-        for (MidiTrackSequencer s : tracks) {
-            if (!s.isFinished()) {
-                return false;
-            }
-        }
+    public void step(double currentTime) {
+        timing.update(currentTime);
 
-        return true;
-    }
-
-    public void step() {
         // execute until stalls
-        for (MidiTrackSequencer seq : tracks) {
+        for (MidiTrackSequencer seq : trackSequencers) {
             seq.executeUntilStall();
         }
 
         // clear stalls and execute zero delta events
-        double currentTime = timing.getCurrentTime();
-
         MidiTrackSequencer stalledSequencer = getEarliestStalledSequencer(currentTime);
         while (stalledSequencer != null) {
             // progress all track times until the stalling event is unstalled
@@ -48,7 +35,7 @@ public class MidiSequencer {
             stalledSequencer.updateCurrentTime(stallTime);
             stalledSequencer.executeUntilStall();
 
-            for (MidiTrackSequencer seq : tracks) {
+            for (MidiTrackSequencer seq : trackSequencers) {
                 seq.updateCurrentTime(stallTime);
             }
 
@@ -56,7 +43,7 @@ public class MidiSequencer {
         }
 
         // catch all sequencers up with the current time
-        for (MidiTrackSequencer seq : tracks) {
+        for (MidiTrackSequencer seq : trackSequencers) {
             seq.updateCurrentTime(currentTime);
         }
     }
@@ -65,7 +52,7 @@ public class MidiSequencer {
         MidiTrackSequencer stalledSequencer = null;
         double minStallUntil = 0;
 
-        for (MidiTrackSequencer sequencer : tracks) {
+        for (MidiTrackSequencer sequencer : trackSequencers) {
             if (!sequencer.isStalled()) {
                 continue;
             }
@@ -84,5 +71,51 @@ public class MidiSequencer {
         }
 
         return stalledSequencer;
+    }
+
+    public void setFile(MidiFile file) {
+        this.file = file;
+        trackSequencers = new MidiTrackSequencer[file.tracks.size()];
+
+        for (int i = 0; i < file.tracks.size(); i++) {
+            trackSequencers[i] = new MidiTrackSequencer(
+                    file.tracks.get(i),
+                    receiver,
+                    timing);
+        }
+
+        timing.reset();
+        timing.setTicksPerBeat(file.header.divisions);
+    }
+
+    public MidiFile getFile() {
+        return file;
+    }
+
+    public boolean isFinished() {
+        for (MidiTrackSequencer s : trackSequencers) {
+            if (!s.isFinished()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void seek(double seekTime) {
+        if(seekTime < timing.getCurrentTime()) {
+            // if seeking back in time we need to replay sequencer from start
+            timing.reset();
+            timing.setTicksPerBeat(file.header.divisions);
+            resetSequencers();
+        }
+
+        timing.update(seekTime);
+    }
+
+    private void resetSequencers() {
+        for(MidiTrackSequencer sequencer : trackSequencers) {
+            sequencer.reset();
+        }
     }
 }

@@ -16,14 +16,14 @@ public class MidiTrackSequencer {
     private double waitStart = 0;
     private double waitTicks = 0;
 
-    private final MidiEventExecutor reciever;
+    private final MidiEventExecutor receiver;
 
     public MidiTrackSequencer(
             MidiTrack track,
-            MidiEventExecutor reciever,
+            MidiEventExecutor receiver,
             MidiTiming timing) {
         this.track = track;
-        this.reciever = reciever;
+        this.receiver = receiver;
         this.timing = timing;
 
         previousMicroSecondsPerTick = timing.getMicroSecondsPerTick();
@@ -36,7 +36,7 @@ public class MidiTrackSequencer {
             if (event.timeDelta == 0 || event == stallEvent) {
                 stallEvent = null;
 
-                reciever.onExecute(event, getStallUntil());
+                receiver.onExecute(event, getStallUntil());
 
                 if (event instanceof MidiMetaSetTempo) {
                     MidiMetaSetTempo tempo = (MidiMetaSetTempo) event;
@@ -100,5 +100,14 @@ public class MidiTrackSequencer {
 
     private void nextEvent() {
         currentEventIndex++;
+    }
+
+    public void reset() {
+        previousMicroSecondsPerTick = timing.getMicroSecondsPerTick();
+        currentTime = 0;
+        currentEventIndex = 0;
+        stallEvent = null;
+        waitStart = 0;
+        waitTicks = 0;
     }
 }

@@ -103,7 +103,11 @@ public class MidiSequencer {
     }
 
     public void seek(double seekTime) {
-        if(seekTime < timing.getCurrentTime()) {
+        seek(seekTime, false);
+    }
+
+    public void seek(double seekTime, boolean forceReplay) {
+        if (seekTime < timing.getCurrentTime() || forceReplay) {
             // if seeking back in time we need to replay sequencer from start
             timing.reset();
             timing.setTicksPerBeat(file.header.divisions);
@@ -114,7 +118,7 @@ public class MidiSequencer {
     }
 
     private void resetSequencers() {
-        for(MidiTrackSequencer sequencer : trackSequencers) {
+        for (MidiTrackSequencer sequencer : trackSequencers) {
             sequencer.reset();
         }
     }

@@ -19,7 +19,7 @@ public enum MidiMetaEventName {
 
     public final byte value;
 
-    private MidiMetaEventName(int value) {
+    MidiMetaEventName(int value) {
         this.value = (byte) (value & 0xFF);
     }
 

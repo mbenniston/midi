@@ -2,6 +2,9 @@ package midi.Playback;
 
 import midi.Data.MidiFile;
 
+/**
+ * Executes events in time for all midi tracks in a file.
+ */
 public class MidiSequencer {
     private final MidiTiming timing;
     private final MidiEventExecutor receiver;
@@ -30,7 +33,7 @@ public class MidiSequencer {
         // clear stalls and execute zero delta events
         MidiTrackSequencer stalledSequencer = getEarliestStalledSequencer(currentTime);
         while (stalledSequencer != null) {
-            // progress all track times until the stalling event is unstalled
+            // progress all track times until the stalling event is finished
             double stallTime = stalledSequencer.getStallUntil();
             stalledSequencer.updateCurrentTime(stallTime);
             stalledSequencer.executeUntilStall();

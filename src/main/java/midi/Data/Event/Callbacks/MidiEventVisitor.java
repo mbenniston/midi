@@ -22,7 +22,7 @@ public abstract class MidiEventVisitor implements MidiEventListener {
         visit(event);
     }
 
-    public static class DefaultMessgeVisitor extends MidiEventVisitor {
+    public static class DefaultMessageVisitor extends MidiEventVisitor {
 
         @Override
         public void visit(MidiMetaEvent event) {

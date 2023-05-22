@@ -1,15 +1,20 @@
 package midi.Writing;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import midi.Data.Event.MidiEvent;
 import midi.Data.Event.Callbacks.MidiEventVisitor;
+import midi.Data.Event.MidiEvent;
 import midi.Data.Event.MidiEvents.MidiChannelEvent;
 import midi.Data.Event.MidiEvents.MidiMetaEvent;
 import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvent;
-import static midi.Writing.WritingUtils.*;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import static midi.Writing.WritingUtils.writeVariableLength;
+
+/**
+ * Writes midi events as bytes to a stream.
+ * Midi events are either of type: channel, meta or system.
+ */
 public class MidiEventWriter extends MidiEventVisitor {
     private OutputStream outputStream;
     private IOException exception = null;

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Contains utility functions for reading midi encoded data types.
+ */
 public class ReadingUtils {
     public static final int MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION = (Long.BYTES * 8 - 1) / 7;
     public static final int MAX_BITS_SUPPORTED_FOR_VARIABLE_PRECISION = MAX_READABLE_BYTES_FOR_VARIABLE_PRECISION * 8;

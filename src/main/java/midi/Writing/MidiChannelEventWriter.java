@@ -1,21 +1,18 @@
 package midi.Writing;
 
+import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
+import midi.Data.Event.MidiEvents.MidiChannelEvent;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.*;
+import midi.Data.MidiChannelEventName;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
-import midi.Data.MidiChannelEventName;
-import midi.Data.Event.Callbacks.MidiChannelEventVisitor;
-import midi.Data.Event.MidiEvents.MidiChannelEvent;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceAfterTouch;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceChannelPressure;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceControlChange;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOff;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOn;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoicePitchBend;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceProgramChange;
+import static midi.Writing.WritingUtils.writeByte;
 
-import static midi.Writing.WritingUtils.*;
-
+/**
+ * Writes midi channel events as bytes to a stream.
+ */
 public class MidiChannelEventWriter extends MidiChannelEventVisitor {
     private int lastStatus = 0;
     private OutputStream outputStream;

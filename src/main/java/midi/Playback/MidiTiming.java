@@ -1,24 +1,31 @@
 package midi.Playback;
 
+/**
+ * Tracks current time for a playback and timing parameters.
+ */
 public class MidiTiming {
+    private static final long DEFAULT_TICKS_PER_BEAT = 60;
+    private static final long DEFAULT_MICROSECONDS_PER_BEAT = 500000;
+
     private double currentTime = 0.0;
 
-    private long ticksPerBeat = 60;
-    private long microSecondsPerBeat = 500000;
+    private long ticksPerBeat = DEFAULT_TICKS_PER_BEAT;
+    private long microSecondsPerBeat = DEFAULT_MICROSECONDS_PER_BEAT;
     private double microSecondsPerTick = microSecondsPerBeat / (double) ticksPerBeat;
 
     public final MidiTimingView view;
 
-    public void reset() {
-        currentTime = 0;
-        ticksPerBeat = 60;
-        microSecondsPerBeat = 500000;
-        microSecondsPerTick = microSecondsPerBeat / (double) ticksPerBeat;
-    }
-
     public MidiTiming() {
         view = new MidiTimingView();
     }
+
+    public void reset() {
+        currentTime = 0;
+        ticksPerBeat = DEFAULT_TICKS_PER_BEAT;
+        microSecondsPerBeat = DEFAULT_MICROSECONDS_PER_BEAT;
+        microSecondsPerTick = microSecondsPerBeat / (double) ticksPerBeat;
+    }
+
 
     public void update(double time) {
         currentTime = time;

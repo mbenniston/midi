@@ -1,9 +1,12 @@
 package midi.Playback;
 
-import midi.Data.MidiTrack;
 import midi.Data.Event.MidiEvent;
 import midi.Data.Event.MidiEvents.MidiMetaEvents.MidiMetaSetTempo;
+import midi.Data.MidiTrack;
 
+/**
+ * Executes events in time for a certain midi track.
+ */
 public class MidiTrackSequencer {
     private final MidiTrack track;
     private final MidiTiming timing;

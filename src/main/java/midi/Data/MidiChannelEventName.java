@@ -11,7 +11,7 @@ public enum MidiChannelEventName {
 
     public final byte value;
 
-    private MidiChannelEventName(int value) {
+    MidiChannelEventName(int value) {
         this.value = (byte) (value & 0xFF);
     }
 

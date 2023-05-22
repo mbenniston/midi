@@ -1,22 +1,20 @@
 package midi.Reading;
 
-import static midi.Reading.ReadingUtils.*;
+import midi.Data.Event.MidiEvents.MidiChannelEvent;
+import midi.Data.Event.MidiEvents.MidiChannelEvents.*;
+import midi.Data.MidiChannelEventName;
+import midi.Reading.MidiEventReader.MidiEventHeader;
+import midi.Reading.MidiFileReader.MidiLoadError;
 
 import java.io.IOException;
 import java.io.PushbackInputStream;
 
-import midi.Data.MidiChannelEventName;
-import midi.Data.Event.MidiEvents.*;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceAfterTouch;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceChannelPressure;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceControlChange;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOff;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceNoteOn;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoicePitchBend;
-import midi.Data.Event.MidiEvents.MidiChannelEvents.MidiVoiceProgramChange;
-import midi.Reading.MidiEventReader.MidiEventHeader;
-import midi.Reading.MidiFileReader.MidiLoadError;
+import static midi.Reading.ReadingUtils.byteToInt;
+import static midi.Reading.ReadingUtils.readByte;
 
+/**
+ * Reads midi channel event messages from a stream.
+ */
 public class MidiChannelEventReader {
     private final PushbackInputStream source;
 

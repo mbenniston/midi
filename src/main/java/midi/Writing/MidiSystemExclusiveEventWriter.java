@@ -1,12 +1,13 @@
 package midi.Writing;
 
+import midi.Data.Event.Callbacks.MidiSystemExclusiveEventVisitor;
+import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvent;
+import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvents.MidiSystemExclusiveManufacturerMessage;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
-import midi.Data.Event.Callbacks.MidiSystemExclusiveEventVisitor;
-import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvent;
-import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvents.MidiSystemExlusiveManufacturerMessage;
-import static midi.Writing.WritingUtils.*;
+import static midi.Writing.WritingUtils.writeByte;
 
 public class MidiSystemExclusiveEventWriter extends MidiSystemExclusiveEventVisitor {
     private IOException exception;
@@ -17,7 +18,7 @@ public class MidiSystemExclusiveEventWriter extends MidiSystemExclusiveEventVisi
     }
 
     @Override
-    public void visit(MidiSystemExlusiveManufacturerMessage manufacturerMessage) {
+    public void visit(MidiSystemExclusiveManufacturerMessage manufacturerMessage) {
         try {
             if (!manufacturerMessage.includesPreambleByte) {
                 writeByte(outputStream, 0xF7);

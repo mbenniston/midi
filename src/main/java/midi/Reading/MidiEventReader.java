@@ -1,13 +1,17 @@
 package midi.Reading;
 
-import java.io.IOException;
-import java.io.PushbackInputStream;
-
 import midi.Data.Event.MidiEvent;
 import midi.Reading.MidiFileReader.MidiLoadError;
 
+import java.io.IOException;
+import java.io.PushbackInputStream;
+
 import static midi.Reading.ReadingUtils.*;
 
+/**
+ * Reads midi event messages from a stream.
+ * Messages can be of type: channel, meta or system.
+ */
 public class MidiEventReader {
     private final PushbackInputStream source;
 

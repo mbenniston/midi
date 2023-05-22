@@ -1,13 +1,19 @@
 package midi.Writing;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import midi.Data.MidiFile;
 import midi.Data.MidiHeader;
 import midi.Data.MidiTrack;
-import static midi.Writing.WritingUtils.*;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import static midi.Writing.WritingUtils.writeUnsignedInt;
+import static midi.Writing.WritingUtils.writeUnsignedShort;
+
+/**
+ * Writes a whole midi file to an output stream.
+ * Includes writing all the tracks and their events.
+ */
 public class MidiFileWriter {
     private final MidiTrackWriter trackWriter;
     private final OutputStream outputStream;

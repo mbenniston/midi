@@ -1,14 +1,18 @@
 package midi.Writing;
 
+import midi.Data.Event.MidiEvent;
+import midi.Data.MidiTrack;
+import midi.Data.MidiTrackHeader;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
-import midi.Data.MidiTrack;
-import midi.Data.MidiTrackHeader;
-import midi.Data.Event.MidiEvent;
+import static midi.Writing.WritingUtils.writeUnsignedInt;
 
-import static midi.Writing.WritingUtils.*;
-
+/**
+ * Writes midi track to a stream.
+ * This includes writing all its events to the stream.
+ */
 public class MidiTrackWriter {
     private final MidiEventWriter eventWriter;
     private final OutputStream outputStream;

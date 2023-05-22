@@ -1,15 +1,19 @@
 package midi.Reading;
 
+import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvent;
+import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvents.MidiSystemExclusiveManufacturerMessage;
+import midi.Reading.MidiEventReader.MidiEventHeader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvent;
-import midi.Data.Event.MidiEvents.MidiSystemExclusiveEvents.MidiSystemExlusiveManufacturerMessage;
-import midi.Reading.MidiEventReader.MidiEventHeader;
+import static midi.Reading.ReadingUtils.listToByteArray;
+import static midi.Reading.ReadingUtils.readByte;
 
-import static midi.Reading.ReadingUtils.*;
-
+/**
+ * Reads midi system exclusive event messages from a stream.
+ */
 public class MidiSystemExclusiveReader {
     private final InputStream source;
 
@@ -27,11 +31,11 @@ public class MidiSystemExclusiveReader {
         throw new IOException("Unrecognised system event type");
     }
 
-    public MidiSystemExlusiveManufacturerMessage readSystemManufacturerMessage(
+    public MidiSystemExclusiveManufacturerMessage readSystemManufacturerMessage(
             MidiEventHeader eventHeader,
             boolean includesPreamble)
             throws IOException {
-        MidiSystemExlusiveManufacturerMessage event = new MidiSystemExlusiveManufacturerMessage();
+        MidiSystemExclusiveManufacturerMessage event = new MidiSystemExclusiveManufacturerMessage();
 
         ArrayList<Byte> bytes = new ArrayList<>();
 

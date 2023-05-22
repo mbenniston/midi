@@ -1,12 +1,15 @@
 package midi.Writing;
 
+import midi.Reading.ReadingUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import midi.Reading.ReadingUtils;
-
+/**
+ * Contains utility functions for writing java encoded data types into the midi encoding.
+ */
 public class WritingUtils {
 
     public static void convertLongToVariableLength(long l, ArrayList<Byte> destBytes) {

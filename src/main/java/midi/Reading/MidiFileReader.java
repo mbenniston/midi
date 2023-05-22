@@ -1,15 +1,20 @@
 package midi.Reading;
 
-import static midi.Reading.ReadingUtils.*;
+import midi.Data.MidiFile;
+import midi.Data.MidiHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.util.ArrayList;
 
-import midi.Data.MidiFile;
-import midi.Data.MidiHeader;
+import static midi.Reading.ReadingUtils.readUnsignedInt;
+import static midi.Reading.ReadingUtils.readUnsignedShort;
 
+/**
+ * Reads a whole midi file from a stream.
+ * Reads all its tracks and events.
+ */
 public class MidiFileReader {
     public static final long MIDI_HEADER_CHUNK_ID = 0x4D546864L;
 

@@ -1,17 +1,19 @@
-
 package midi.Reading;
 
-import static midi.Reading.ReadingUtils.*;
+import midi.Data.Event.MidiEvents.MidiMetaEvent;
+import midi.Data.Event.MidiEvents.MidiMetaEvents.*;
+import midi.Data.MidiMetaEventName;
+import midi.Reading.MidiEventReader.MidiEventHeader;
+import midi.Reading.MidiFileReader.MidiLoadError;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import midi.Data.MidiMetaEventName;
-import midi.Data.Event.MidiEvents.MidiMetaEvent;
-import midi.Data.Event.MidiEvents.MidiMetaEvents.*;
-import midi.Reading.MidiEventReader.MidiEventHeader;
-import midi.Reading.MidiFileReader.MidiLoadError;
+import static midi.Reading.ReadingUtils.*;
 
+/**
+ * Reads midi meta event messages from a stream.
+ */
 public class MidiMetaEventReader {
     private final InputStream source;
 
